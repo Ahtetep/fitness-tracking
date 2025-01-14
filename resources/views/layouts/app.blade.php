@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Главная')</title>
-
-    <!-- Подключение Vite-стилей -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css']) {{-- Подключение стилей --}}
 </head>
 <body>
 <header>
@@ -20,11 +18,20 @@
 </header>
 
 <main>
-    @yield('content')
+    @yield('content') {{-- Контент страницы --}}
 </main>
 
 <footer>
     <p>&copy; {{ date('Y') }} Мой сайт. Все права защищены.</p>
 </footer>
+
+{{-- Подключение jQuery через CDN --}}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+{{-- Подключение основного JS --}}
+@vite(['resources/js/app.js'])
+
+{{-- Подключение пользовательских скриптов --}}
+@yield('scripts')
 </body>
 </html>

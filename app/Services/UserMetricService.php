@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\UserMetric;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class UserMetricService extends BaseService
@@ -74,5 +75,16 @@ class UserMetricService extends BaseService
     public function getLatest(int $limit = 5): Collection
     {
         return $this->model->latest()->take($limit)->get();
+    }
+
+    /**
+     * Получить метрики с пагинацией.
+     *
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function paginate(int $perPage = 10): LengthAwarePaginator
+    {
+        return $this->model->latest()->paginate($perPage);
     }
 }

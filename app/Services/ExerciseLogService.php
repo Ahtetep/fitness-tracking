@@ -3,59 +3,38 @@
 namespace App\Services;
 
 use App\Models\ExerciseLog;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
-class ExerciseLogService extends BaseService
+class ExerciseLogService
 {
-    public function __construct(ExerciseLog $model)
-    {
-        parent::__construct($model);
-    }
-
     /**
-     * Получить записи журнала по пользователю.
+     * Создать запись в журнале упражнений.
      *
-     * @param int $userId
-     * @return Collection<int, ExerciseLog> Записи журнала пользователя
+     * @param array $data
+     * @return ExerciseLog
      */
-    public function getByUserId(int $userId): Collection
+    public function createExerciseLog(array $data): ExerciseLog
     {
-        return ExerciseLog::whereUserId($userId)->get();
+        return ExerciseLog::create($data);
     }
 
     /**
-     * Получить записи журнала по упражнению.
+     * Получить данные для графиков по упражнению.
      *
      * @param int $exerciseId
-     * @return Collection<int, ExerciseLog> Записи журнала упражнения
-     */
-    public function getByExerciseId(int $exerciseId): Collection
-    {
-        return ExerciseLog::whereExerciseId($exerciseId)->get();
-    }
-
-    /**
-     * Получить записи журнала за определенный день.
-     *
-     * @param string $date
-     * @return Collection<int, ExerciseLog> Записи за указанный день
-     */
-    public function getByDate(string $date): Collection
-    {
-        return ExerciseLog::whereLoggedAt($date)->get();
-    }
-
-    /**
-     * Найти запись журнала по ID пользователя и ID упражнения.
-     *
+     * @param string $startDate
+     * @param string $endDate
      * @param int $userId
-     * @param int $exerciseId
-     * @return ExerciseLog|null Запись журнала или null, если не найдено
+     * @return Collection
      */
-    public function findByUserAndExercise(int $userId, int $exerciseId): ?ExerciseLog
+    public function getLogsByExercise($exerciseId, $startDate, $endDate, $userId): Collection
     {
-        return ExerciseLog::whereUserId($userId)
-            ->whereExerciseId($exerciseId)
-            ->first();
+        return ExerciseLog::selectRaw('logged_at as date, SUM(repetitions) as total_repetitions, SUM(time) as total_time, SUM(distance) as total_distance, SUM(calories) as total_calories')
+            ->where('exercise_id', $exerciseId)
+            ->where('user_id', $userId)
+            ->whereBetween('logged_at', [$startDate, $endDate])
+            ->groupBy('logged_at')
+            ->orderBy('logged_at')
+            ->get();
     }
 }

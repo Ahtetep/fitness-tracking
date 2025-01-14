@@ -1,4 +1,4 @@
 import './bootstrap';
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Главная страница загружена!');
-});
+import Chart from 'chart.js/auto';
+window.Chart = Chart;
+

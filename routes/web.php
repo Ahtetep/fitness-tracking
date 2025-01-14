@@ -55,6 +55,9 @@ Route::post('/email/resend', [VerificationController::class, 'resend'])->name('v
 Route::get('/', [HomeController::class, 'index'])->name('home');
 // Страница упражнений
 Route::get('/exercises', [ExerciseController::class, 'index'])->name('exercises');
+Route::post('/exercises/{exerciseId}', [ExerciseController::class, 'storeExerciseLog'])->name('exercises.store');
+
 
 // Страница метрик
 Route::get('/metrics', [UserMetricController::class, 'index'])->name('metrics');
+Route::post('/metrics', [UserMetricController::class, 'store'])->name('metrics.store');
